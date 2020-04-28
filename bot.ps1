@@ -75,8 +75,12 @@ $moveList = $directionList | ForEach-Object {
 }
 
 $action = $moveList | Get-Random
-$action
-$action.Direction | Out-File -FilePath act
+if($action) {
+    $action
+    $action.Direction | Out-File -FilePath act
+} else {
+    'no suitable move found'
+}
 
 $env:GIT_SSH_COMMAND = 'ssh -i ./ssh'
 git add act

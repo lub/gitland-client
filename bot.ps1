@@ -79,8 +79,8 @@ if($moveList) {
     $action
     $direction = $action.Direction
 } else {
-    'no suitable move found'
     $direction = $directionList | Get-Random
+    'no suitable move found; moving random: '+$direction
 }
 $direction | Out-File -FilePath act
 

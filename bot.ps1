@@ -69,7 +69,7 @@ $moveList = $directionList | ForEach-Object {
 
     $move.Direction = $_.Name
 
-    if($move.Color -notin ($currentPlayer.Color, $null)) {
+    if($move.Color -notin ($currentPlayer.Team, $null)) {
         $move
     }
 }

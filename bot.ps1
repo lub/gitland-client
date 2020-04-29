@@ -80,11 +80,10 @@ $moveList = $directionList | ForEach-Object {
     | Where-Object X -eq $preMove.X `
     | Where-Object Y -eq $preMove.Y
 
-    $move = $position.Clone()
-    $move.Direction = $_.Name
-
     # check for $null, because that's out of bounds
-    if($move.Color -ne $null) {
+    if($position -ne $null) {
+        $move = $position.Clone()
+        $move.Direction = $_.Name
         [pscustomobject]$move
     }
 } `

@@ -85,14 +85,10 @@ $moveList = $directionList | ForEach-Object {
 
     # check for $null, because that's out of bounds
     if($move.Color -ne $null) {
-        # check if the field already has our color anyway
-        if($move.Color.Substring(1) -ne $currentPlayer.Team.Substring(1)) {
-            [pscustomobject]$move
-        }
+        [pscustomobject]$move
     }
 } `
-| Sort-Object Decay `
-| Sort-Object {$_.Color.Substring(1) -ne $currentPlayer.Team.Substring(1)}
+| Sort-Object {$_.Color.Substring(1) -eq $currentPlayer.Team.Substring(1)},Decay
 
 if($moveList) {
     $action = $moveList | Select-Object -First 1

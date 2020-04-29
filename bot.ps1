@@ -69,8 +69,12 @@ $moveList = $directionList | ForEach-Object {
 
     $move.Direction = $_.Name
 
-    if($move.Color.Substring(1) -notin ($currentPlayer.Team.Substring(1), $null)) {
-        $move
+    # check for $null, because that's out of bounds
+    if($move.Color -ne $null) {
+        # check if the field already has our color anyway
+        if($move.Color.Substring(1) -ne $currentPlayer.Team.Substring(1)) {
+            $move
+        }
     }
 }
 

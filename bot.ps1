@@ -11,15 +11,34 @@ $players = Get-ChildItem -Path '../gitland/players/' -Exclude 'placeholder999999
 }
 
 $y = 0
+$decay = Get-Content -Path '../gitland/decay' `
+| ForEach-Object {
+    $x = 0
+    $_ -split ',' | ForEach-Object {
+        @{
+            Decay = $_
+            X = $x++
+            Y = $y
+        }
+    }
+    $y++
+}
+
+$y = 0
 $map = Get-Content -Path '../gitland/map' `
 | ForEach-Object {
     $x = 0
     $_ -split ',' | ForEach-Object {
         @{
             Color = $_
-            X = $x++
+            Decay = $decay `
+            | Where-Object X -eq $x `
+            | Where-Object Y -eq $y `
+            | Select-Object -ExpandProperty Decay
+            X = $x
             Y = $y
         }
+        $x++
     }
     $y++
 }
@@ -49,37 +68,34 @@ $directionList = @(
 
 
 $currentPlayer = $players | Where-Object Player -eq 'lub'
-$currentPosition = @{
-    Color = $map `
-    | Where-Object X -eq $currentPlayer.X `
-    | Where-Object Y -eq $currentPlayer.Y `
-    | Select-Object -ExpandProperty Color
-    X = $currentPlayer.X
-    Y = $currentPlayer.Y
-}
+$currentPosition = $map `
+| Where-Object X -eq $currentPlayer.X `
+| Where-Object Y -eq $currentPlayer.Y
 
 $moveList = $directionList | ForEach-Object {
-    $move = $currentPosition.Clone()
-    [int]$move.($_.Axis) += $_.Modifier
+    $preMove = $currentPosition.Clone()
+    [int]$preMove.($_.Axis) += $_.Modifier
 
-    $move.Color = $map `
-    | Where-Object X -eq $move.X `
-    | Where-Object Y -eq $move.Y `
-    | Select-Object -ExpandProperty Color
+    $position = $map `
+    | Where-Object X -eq $preMove.X `
+    | Where-Object Y -eq $preMove.Y
 
+    $move = $position.Clone()
     $move.Direction = $_.Name
 
     # check for $null, because that's out of bounds
     if($move.Color -ne $null) {
         # check if the field already has our color anyway
         if($move.Color.Substring(1) -ne $currentPlayer.Team.Substring(1)) {
-            $move
+            [pscustomobject]$move
         }
     }
-}
+} `
+| Sort-Object Decay `
+| Sort-Object {$_.Color.Substring(1) -ne $currentPlayer.Team.Substring(1)}
 
 if($moveList) {
-    $action = $moveList | Get-Random
+    $action = $moveList | Select-Object -First 1
     $action
     $direction = $action.Direction
 } else {

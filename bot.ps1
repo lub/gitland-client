@@ -90,9 +90,13 @@ $moveList = $directionList | ForEach-Object {
 } `
 | Sort-Object {$_.Color.Substring(1) -eq $currentPlayer.Team.Substring(1)},Decay
 
+'possible moves:'
+$moveList | Format-Table
+
 if($moveList) {
     $action = $moveList | Select-Object -First 1
-    $action
+    'choosen action:'
+    $action | Format-Table
     $direction = $action.Direction
 } else {
     $direction = $directionList.Name | Get-Random

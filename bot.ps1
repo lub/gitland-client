@@ -84,10 +84,15 @@ $moveList = $directionList | ForEach-Object {
     if($position -ne $null) {
         $move = $position.Clone()
         $move.Direction = $_.Name
-        [pscustomobject]$move
+
+        # check if player is currently empty
+        # TODO: spy on move of player on that field
+        if($move.Color[0] -eq 'u') {
+            [pscustomobject]$move
+        }
     }
 } `
-| Sort-Object {$_.Color.Substring(1) -eq $currentPlayer.Team.Substring(1)},{$_.Color -eq 'ux'},Decay
+| Sort-Object {$_.Color[1] -eq $currentPlayer.Team[1]},{$_.Color -eq 'ux'},Decay
 
 'possible moves:'
 $moveList | Format-Table

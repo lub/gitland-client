@@ -88,7 +88,7 @@ $moveList = $directionList | ForEach-Object {
         [pscustomobject]$move
     }
 } `
-| Sort-Object {$_.Color.Substring(1) -eq $currentPlayer.Team.Substring(1)},Decay
+| Sort-Object {$_.Color.Substring(1) -eq $currentPlayer.Team.Substring(1)},{$_.Color -eq 'ux'},Decay
 
 'possible moves:'
 $moveList | Format-Table

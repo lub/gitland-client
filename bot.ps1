@@ -92,7 +92,7 @@ $moveList = $directionList | ForEach-Object {
         }
     }
 } `
-| Sort-Object {$_.Color[1] -eq $currentPlayer.Team[1]},{$_.Color -eq 'ux'},Decay
+| Sort-Object {$_.Color[1] -ne $currentPlayer.Team[1]},{$_.Color -ne 'ux'},Decay -Descending
 
 'possible moves:'
 $moveList | Format-Table
